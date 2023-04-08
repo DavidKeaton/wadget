@@ -1,0 +1,2 @@
+class g:
+	args = None
