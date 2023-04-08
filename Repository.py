@@ -6,6 +6,8 @@ import re
 import urllib.parse
 import urllib.request
 
+from util import dprint, vprint, eprint
+
 
 class Repository:
 	_supportsHttps = None
@@ -18,7 +20,11 @@ class Repository:
 			'page': None
 		},
 		# does this repository use pages in its search?
-		'pagination': None
+		'pagination': None,
+
+		# Regular Expressions
+		're': {
+		}
 	}
 
 	_download = {
@@ -27,15 +33,19 @@ class Repository:
 			'name':			None,
 			'page':			None
 		},
-		'pagination':		None
+		'pagination':		None,
+
+		# Regular Expressions
+		're': {
+		}
 	}
 
 	"""
-	:param opts
-		Arguments passed into main().
+	:param wads
+		List of wads.
 	"""
-	def __init__(self, opts):
-		self._opts = opts
+	def __init__(self, wads):
+		self._wads = wads
 
 		# TODO: validate all needed instance vars are declared
 		# self.__validate()
@@ -78,10 +88,10 @@ class Repository:
 		url += self._baseUrl
 
 		# append url for given action
-		url += aref['url']
+		url += "/{}".format(aref['url'])
 
 		# build query string
-		if len(kwargs) > 1:
+		if len(kwargs) >= 1:
 			params = {}
 
 			for kw in kwargs:
@@ -96,6 +106,7 @@ class Repository:
 			qs = urllib.parse.urlencode(params)
 			url += "?{}".format(qs)
 
+		dprint("created URL: {}", url)
 		return url
 
 	"""
@@ -116,6 +127,15 @@ class Repository:
 	"""
 	@staticmethod
 	def knownAs(name: str) -> bool:
+		raise NotImplementedError
+
+	"""
+	Print results from a search.
+	
+	:param results
+		Array of results from a search.
+	"""
+	def showResults(self, results): # TODO
 		raise NotImplementedError
 
 	"""
